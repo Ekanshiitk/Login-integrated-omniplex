@@ -1,5 +1,5 @@
 # Omniplex
-
+This project enhances and deploys the Omniplex application by updating the login page UI to match Claude.ai’s interface design, integrating third-party APIs, and deployment. The primary focus is on UI simplicity, responsiveness, and user-friendly aesthetics.
 This document explains how to set up and run the project locally, the approach taken for implementation, the AI tools used, and the challenges faced along with solutions.
 
 ---
@@ -21,16 +21,16 @@ Ensure you have the following installed:
 ### ** Steps to Set Up Locally**
 #### ** Clone the Repository**
 ```bash
-git clone https://github.com/your-repo/omniplex.git
-cd omniplex
+git clone https://github.com/Ekanshiitk/Login-integrated-omniplex.git
+cd Login-integrated-omniplex
 ```
 
-#### **② Install Dependencies**
+#### ** Install Dependencies**
 ```bash
 npm install
 ```
 
-#### **③ Set Up Environment Variables**
+#### ** Set Up Environment Variables**
 Create a `.env.local` file in the root directory and add:
 
 ```plaintext
@@ -44,36 +44,64 @@ NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
 NEXT_PUBLIC_RAPIDAPI_KEY=your_rapidapi_key
 ```
 
-#### **④ Start the Development Server**
+#### ** Start the Development Server**
 ```bash
 npm run dev
 ```
 The project will be available at `http://localhost:3000`
 
+
+
 ---
 
-## 📌 **Project Approach & AI Tools Used**
-### **🔹 Authentication & Firestore**
+## **Project Approach & AI Tools Used**
+
+## Approach to the Tasks
+
+### UI Enhancement
+The login page is designed to replicate Claude.ai’s authentication flow. When a user clicks "Sign in" in the sidebar, a centered modal appears with options for Google and email authentication. The page follows a dark-themed UI with minimalist typography, ensuring a seamless user experience. Email validation is mandatory before signing in, preventing incorrect submissions. The UI remains highly responsive, adapting to both mobile and desktop layouts effortlessly.
+
+- Designed the login page to closely resemble Claude.ai’s UI.
+- The login page appears as a centered modal when the "Sign in" button is clicked from the sidebar.
+- The design is minimalistic, featuring a clean black-and-white theme with a focus on accessibility.
+- The Google and email authentication buttons are prominent, ensuring easy navigation.
+- Used Tailwind CSS to maintain responsiveness across different screen sizes.
+- Integrated a validation step where the email must be verified before proceeding with authentication.
+
+### API Integration
+- Integrated a public API from RapidAPI to validate user email before proceeding with authentication.
+- The "Validate Email" button triggers an API request to check the legitimacy of the entered email.
+- Upon successful validation, the "Continue with Email" button is enabled.
+
+### ** Authentication & Firestore**
 - **Implemented Firebase Authentication** for Google Sign-In & Email/Password login.
 - **Firestore used for user data storage**, ensuring seamless authentication state persistence.
 
-### **🔹 AI-Powered Features**
-- **Email Validation API:** Uses **RapidAPI (mailok-email-validation)** to verify email authenticity before account creation.
+### ** AI-Powered Features**
 - **Chatbot & AI Features:** Integrated **OpenAI API** to power chatbot interactions.
 
-### **🔹 Cloud Deployment**
+### ** Cloud Deployment**
 - **Google App Engine** (GAE) is used for deployment.
 - Firebase & Firestore integrated with **Google Cloud IAM** for authentication management.
 - **App.yaml** configuration optimized for Next.js deployment on **Google Cloud Run**.
-
+- Enabled necessary Google Cloud APIs (`cloudbilling.googleapis.com`, `appengine.googleapis.com`).
+- Could not successfully deploy due to some build issues in other parts of the code.
+  
 ---
 
-## 🛠 **Challenges Faced & Solutions**
-### **❌ Issue: No Account Found Even After Signing Up**
+## AI Tools Used
+- ChatGPT: Assisted in troubleshooting Next.js issues and improving Firebase authentication.
+- Claude.ai: Used for UI design references and layout structuring.
+- ESLint & Prettier: Ensured code quality and maintained consistent styling.
+  
+---
+
+## **Challenges Faced & Solutions**
+### ** Issue: No Account Found Even After Signing Up**
 **Cause:** Firestore query logic was incorrect, checking for `email` instead of `uid`.  
 **Solution:** Fixed the query using `where("email", "==", email)` and implemented a **Firestore-based email existence check** before user authentication.
 
-### **❌ Issue: Firebase Permission Errors**
+### ** Issue: Firebase Permission Errors**
 **Cause:** Firestore rules restricted read access for authenticated users.  
 **Solution:** Updated `firestore.rules`:
 ```plaintext
@@ -87,19 +115,9 @@ service cloud.firestore {
 }
 ```
 
-### **❌ Issue: Google Cloud App Deployment Failing**
-**Cause:** `app.yaml` was missing required dependencies and configurations.  
-**Solution:** Created `app.yaml` with:
-```yaml
-runtime: nodejs18
-service: default
-handlers:
-  - url: /.*
-    script: auto
-    secure: always
-```
+### ** Issue: Google Cloud App Deployment Failing**
 
-### **❌ Issue: Next.js Build Failing Due to Webpack Errors**
+### ** Issue: Next.js Build Failing Due to Webpack Errors**
 **Cause:** Conflicts with Webpack cache & TypeScript dependencies.  
 **Solution:** Modified `next.config.js`:
 ```js
@@ -110,36 +128,5 @@ module.exports = {
   },
 };
 ```
-
----
-
-## 🚀 **How to Deploy on Google Cloud**
-1. **Build the Project:**
-```bash
-npm run build
-```
-
-2. **Authenticate & Set Project ID:**
-```bash
-gcloud auth login
-gcloud config set project your-project-id
-```
-
-3. **Enable App Engine & Deploy:**
-```bash
-gcloud app create --region=us-central
-gcloud app deploy
-```
-
-4. **View the Live Project:**
-```bash
-gcloud app browse
-```
-Your project will be available at `https://your-project-id.appspot.com`
-
----
-
-## 💌 **Contact & Contributions**
-If you have any issues, feel free to **open an issue** or contact **ekanshbajpai27@gmail.com**.
 
 ---
